@@ -8,9 +8,9 @@ import os
 def read_data():
     file = __file__
     direc = os.path.dirname(os.path.abspath(file))
-    direc = os.path.abspath(os.sep.join([direc, '..', 'data']))
-    filename = os.path.join(direc, 'day7.csv')
-    return np.genfromtxt(filename, delimiter=',').astype(int)
+    direc = os.path.abspath(os.sep.join([direc, "..", "data"]))
+    filename = os.path.join(direc, "day7.csv")
+    return np.genfromtxt(filename, delimiter=",").astype(int)
 
 
 def get_fuel_cost(data):
@@ -29,14 +29,17 @@ def get_fuel_cost_2(data):
     """
     minx, maxx = min(data), max(data)
     best_pos, best_cost = None, np.inf
-    return min([
-        sum([np.arange(np.abs(x - i) + 1).sum() for x in data]) for i in range(minx, maxx + 1)
-    ])
+    return min(
+        [
+            sum([np.arange(np.abs(x - i) + 1).sum() for x in data])
+            for i in range(minx, maxx + 1)
+        ]
+    )
 
 
 if __name__ == "__main__":
     data = read_data()
     cost = get_fuel_cost(data)
-    print(f'Crabs need a total of {cost} fuel')
+    print(f"Crabs need a total of {cost} fuel")
     cost = get_fuel_cost_2(data)
-    print(f'Crabs need a total of {cost} fuel')
+    print(f"Crabs need a total of {cost} fuel")

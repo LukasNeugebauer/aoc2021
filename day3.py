@@ -8,17 +8,15 @@ import os
 def read_data():
     file = __file__
     direc = os.path.dirname(os.path.abspath(file))
-    direc = os.path.abspath(os.sep.join([direc, '..', 'data']))
-    filename = os.path.join(direc, 'day3.csv')
+    direc = os.path.abspath(os.sep.join([direc, "..", "data"]))
+    filename = os.path.join(direc, "day3.csv")
     with open(filename, "r") as f:
-        data = np.array([
-            [int(x) for x in l] for l in f.read().split()
-        ])
+        data = np.array([[int(x) for x in l] for l in f.read().split()])
     return data
 
 
 def get_power_consumption(data):
-    gamma = (data.sum(axis=0) > data.shape[0] / 2)
+    gamma = data.sum(axis=0) > data.shape[0] / 2
     epsilon = np.logical_not(gamma)
     gamma = bin2dec(gamma.astype(int))
     epsilon = bin2dec(epsilon.astype(int))

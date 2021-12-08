@@ -9,9 +9,9 @@ from collections import Counter, defaultdict
 def read_data():
     file = __file__
     direc = os.path.dirname(os.path.abspath(file))
-    direc = os.path.abspath(os.sep.join([direc, '..', 'data']))
-    filename = os.path.join(direc, 'day6.csv')
-    return np.genfromtxt(filename, delimiter=',')
+    direc = os.path.abspath(os.sep.join([direc, "..", "data"]))
+    filename = os.path.join(direc, "day6.csv")
+    return np.genfromtxt(filename, delimiter=",")
 
 
 def simulate(data, days, init=8, reset=6):
@@ -45,6 +45,6 @@ def simulate_without_overflow(data, days, init=8, reset=6):
 if __name__ == "__main__":
     data = read_data()
     after80 = simulate(data, 80)
-    print(f'After 80 days there would be {len(after80)} fish.')
+    print(f"After 80 days there would be {len(after80)} fish.")
     after256 = simulate_without_overflow(data, 256)
-    print(f'After 256 days there would be {after256} fish.')
+    print(f"After 256 days there would be {after256} fish.")

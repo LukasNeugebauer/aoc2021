@@ -6,7 +6,6 @@ from copy import deepcopy
 
 
 class Board:
-
     def __init__(self, values):
         self.board = np.array(values)
         self.marked = np.zeros(self.board.shape).astype(bool)
@@ -30,14 +29,14 @@ class Board:
 def read_data():
     file = __file__
     direc = os.path.dirname(os.path.abspath(file))
-    direc = os.path.abspath(os.sep.join([direc, '..', 'data']))
-    filename = os.path.join(direc, 'day4.csv')
+    direc = os.path.abspath(os.sep.join([direc, "..", "data"]))
+    filename = os.path.join(direc, "day4.csv")
     draws, boards, rows = [], [], []
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         lines = f.readlines()
-    draws = [int(x) for x in lines.pop(0).strip('\n').split(',')]
+    draws = [int(x) for x in lines.pop(0).strip("\n").split(",")]
     for l in lines[1:]:
-        l = l.strip('\n')
+        l = l.strip("\n")
         if len(l) == 0:
             boards.append(rows)
             rows = []
@@ -72,13 +71,13 @@ def get_score(board, draw):
     return unmarked_sum * draw
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     draws, boards = read_data()
     board, draw = get_winner(draws, boards)
     final_score = get_score(board, draw)
-    print(f'Final score of winning board: {final_score}.')
+    print(f"Final score of winning board: {final_score}.")
     for b in boards:
         b.reset()
     board, draw = get_last_winner(draws, boards)
     final_score = get_score(board, draw)
-    print(f'Final score of last winning board: {final_score}.')
+    print(f"Final score of last winning board: {final_score}.")

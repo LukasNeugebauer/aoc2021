@@ -9,12 +9,12 @@ from collections import defaultdict, Counter
 def read_data():
     file = __file__
     direc = os.path.dirname(os.path.abspath(file))
-    direc = os.path.abspath(os.sep.join([direc, '..', 'data']))
-    filename = os.path.join(direc, 'day5.csv')
-    with open(filename, 'r') as f:
-        lines = [l.strip('\n').replace('-> ', '') for l in f.readlines()]
+    direc = os.path.abspath(os.sep.join([direc, "..", "data"]))
+    filename = os.path.join(direc, "day5.csv")
+    with open(filename, "r") as f:
+        lines = [l.strip("\n").replace("-> ", "") for l in f.readlines()]
     data = []
-    return [[tuple(map(int, ll.split(','))) for ll in l.split()] for l in lines]
+    return [[tuple(map(int, ll.split(","))) for ll in l.split()] for l in lines]
 
 
 def check_straight(pos1, pos2):
@@ -76,9 +76,11 @@ def count_lt_2(counts):
     return sum([v for k, v in counter.items() if k >= 2])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     data = read_data()
     counts = get_straight_visits(data)
-    print(f'There are at least two overlapping straight lines at {count_lt_2(counts)} points.')
+    print(
+        f"There are at least two overlapping straight lines at {count_lt_2(counts)} points."
+    )
     counts = get_all_visits(data)
-    print(f'There are at least two overlapping lines at {count_lt_2(counts)} points.')
+    print(f"There are at least two overlapping lines at {count_lt_2(counts)} points.")

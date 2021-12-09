@@ -11,9 +11,9 @@ def read_data():
     direc = os.path.dirname(os.path.abspath(file))
     direc = os.path.abspath(os.sep.join([direc, "..", "data"]))
     filename = os.path.join(direc, "day9.csv")
-    return np.array([
-        [int(x) for x in line.strip('\n')] for line in open(filename, 'r').readlines()
-    ])
+    return np.array(
+        [[int(x) for x in line.strip("\n")] for line in open(filename, "r").readlines()]
+    )
 
 
 def find_local_minima(data):
@@ -35,8 +35,7 @@ def get_neighbors(idx, maxx=100, maxy=100):
     xs = x + np.array([-1, 0, 0, 1])
     ys = y + np.array([0, -1, 1, 0])
     keep_idx = (
-        np.logical_and(0 <= xs, xs < maxx) *
-        np.logical_and(0 <= ys, ys < maxy)
+        np.logical_and(0 <= xs, xs < maxx) * np.logical_and(0 <= ys, ys < maxy)
     ).astype(bool)
     return xs[keep_idx], ys[keep_idx]
 
@@ -66,6 +65,6 @@ if __name__ == "__main__":
     data = read_data()
     local_minima = find_local_minima(data)
     rl_sum = get_risk_sum(data, local_minima)
-    print(f'Sum of risk levels: {rl_sum}')
+    print(f"Sum of risk levels: {rl_sum}")
     result_size_prod = prod_basin_sizes(local_minima, data)
-    print(f'Product of 3 largest basin sizes: {result_size_prod}')
+    print(f"Product of 3 largest basin sizes: {result_size_prod}")

@@ -44,16 +44,16 @@ def get_neighbors(idx, maxx=100, maxy=100):
 def get_basin_size(local_minimum, data):
     size = 1
     maxx, maxy = data.shape
-    contained, new_ones = [local_minimum], [local_minimum]
+    contained, new_ones = [set(local_minimum) for _ in range(2)]
     proposals = [(x, y) for x, y in zip(*get_neighbors(local_minimum, maxx, maxy))]
     while len(new_ones):
-        new_ones = [x for x in proposals if not data[x] == 9]
-        contained += new_ones
+        new_ones = set([x for x in proposals if not data[x] == 9])
+        contained = contained | new_ones
         proposals = set()
         for x in new_ones:
-            nb = [(x, y) for x, y in zip(*get_neighbors(x, maxx, maxy))]
-            proposals = proposals.union(nb)
-        proposals = proposals.difference(contained)
+            nb = set([(x, y) for x, y in zip(*get_neighbors(x, maxx, maxy))])
+            proposals = proposals | nb
+        proposals = proposals - contained
     return len(contained)
 
 

@@ -71,16 +71,51 @@ def learn_action_value_function(
     rewards,
     actions,
     alpha=.2,
-    epsilon=.2,
-    iterations=20000
+   epsilon=.2,
+    iterations=20000,
+    Q=None
 ):
     """
     Epsilon-greedy Q-Learning, i.e. off-policy learning for the optimal policy
     """
-    Q = {key: [0 for _ in range(len(value))] for key, value in actions.items()}
-    print(f'Training agent for {iterations} iterations. 20k should take like 3 minutes.')
+    if Q is None:
+        Q = {key: [0 for _ in range(len(value))] for key, value in actions.items()}
     for _ in tqdm(range(iterations)):
         Q = rl_episode(Q, rewards, actions, alpha, epsilon)
+    return Q
+
+
+def construct_full_space(rewards):
+    rewards, tmp = rewards.copy(), rewards.copy()
+    # add columns
+    for _ in range(4):
+        tmp -= 1
+        tmp[tmp == -10] = -1
+        rewards = np.c_[rewards, tmp]
+    # add rows
+    tmp = rewards.copy()
+    for _ in range(4):
+        tmp -= 1
+        tmp[tmp == -10] = -1
+        rewards = np.r_[rewards, tmp]
+    maxy, maxx = rewards.shape
+    actions = {}
+    for i in range(maxy):
+        for j in range(maxx):
+            actions[(i, j)] = get_valid_actions(i, j, maxx, maxy)
+    return rewards, actions
+
+
+def init_Q(actions):
+    """
+    Initialize Q with the negative euclidean distance of resulting state to end_state
+    Should lead to faster learning
+    """
+    end_state = list(actions.keys())[-1]
+    distance = lambda x, y: np.sqrt((np.subtract(x, y) ** 2).sum())
+    Q = {}
+    for pos, action in actions.items():
+        Q[pos] = [-distance(end_state, transition(*pos, a)) for a in action]
     return Q
 
 
@@ -88,9 +123,40 @@ def get_optimal_path_cost(Q):
     return - round(max(Q[(0, 0)])) #we didn't count the last penalty
 
 
+def av_to_sv(Q):
+    size = list(Q.keys())[-1]
+    sv = np.zeros((size[0] + 1, size[1] + 1))
+    for k, value in Q.items():
+        sv[k[0], k[1]] = max(value)
+    return sv
+
+
 if __name__ == "__main__":
     rewards, actions = read_data()
-    Q = learn_action_value_function(rewards, actions)
-    print(f'Cost of shortest path should be somewhere around {get_optimal_path_cost(Q)}')
-    #full_rewards, full_actions = construct_full_space(rewards)
-    #full_Q = learn_action_value_function(full_rewards, full_actions)
+    #Q = learn_action_value_function(rewards, actions)
+    #print(f'Cost of shortest path should be somewhere around {get_optimal_path_cost(Q)}')
+    full_rewards, full_actions = construct_full_space(rewards)
+    #high alpha and epsilon in the beginning for fast learning and to enforce exploration
+    print('Don\'t do this, it will take AGES.')
+    full_Q = learn_action_value_function(
+        full_rewards,
+        full_actions,
+        iterations=200000,
+        alpha=.8,
+        epsilon=.5,
+        Q=init_Q(full_actions)
+    )
+    #then some finetuning with lower exploration and slower learning
+    full_Q = learn_action_value_function(
+        full_rewards,
+        full_actions,
+        iterations=200000,
+        alpha=.2,
+        epsilon=.2,
+        Q=init_Q(full_actions)
+    )
+    print(full_Q[(0, 0)])
+    print(
+        'Cost of shortest path in full problem should be' +
+        f'somewhere around {get_optimal_path_cost(full_Q)}'
+    )
